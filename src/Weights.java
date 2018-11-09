@@ -67,11 +67,8 @@ public class Weights {
 
         return returnWeights;
     }
-    //TODO: create constructor and class for weights matrix
 
-    //TODO: zero diagonal function
 
-    //TODO: create and addition function to add different objects of type weights together
 
 
 }

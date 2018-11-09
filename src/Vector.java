@@ -12,13 +12,6 @@ public class Vector {
         this.matrix = array;
     }
 
-/*
-    public Weights getWeights(){
-        Weights weights = new Weights();
 
-        return weights;
-    }
-*/
-    //TODO: create function that returns autoassociative weights of the instance of vectors, returns obj of type weights
 
 }

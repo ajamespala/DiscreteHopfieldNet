@@ -15,17 +15,18 @@ public class HopfieldNet {
         int numInputVectors = kb.nextInt();
 
         Vector [] vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
+        BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/outputFile1.txt", vectors);
         Weights [] weights = new Weights[numInputVectors];
         for(int i = 0; i < numInputVectors; i++) {
             weights[i] = new Weights(vectors[i]);
             System.out.println("Initialized weights for #" + i);
-            weights[i].printWeights();
+            //weights[i].printWeights();
             weights[i].zeroDiagonal();
             System.out.println("Zeroed diagonal for #" + i);
-            weights[i].printWeights();
+           // weights[i].printWeights();
         }
         Weights W = Weights.addWeights(weights);
-        W.printWeights();
+        //W.printWeights();
 
         //System.out.println("Num input vectors in vectors array: " + vectors.length);
         //for(int i = 0; i<numInputVectors; i++){
@@ -38,6 +39,7 @@ public class HopfieldNet {
 
     //TODO: create functions that implement the testing algorithm
         //TODO: need to verify testing vectors are same dimensions as training vectors
+        //ie weights file will match testing vectors (which also matches training
 
 
 }

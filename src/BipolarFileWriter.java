@@ -79,4 +79,40 @@ public class BipolarFileWriter {
         }
     }
     //TODO: write weights to file
+
+    public static void weightsWriter(String filename, Weights weights){
+        BufferedWriter output = null;
+        int mRows = weights.mRows;
+        int nCols = weights.nCols;
+        int length = mRows * nCols;
+        try {
+            // System.out.print(filename);
+            output = new BufferedWriter(new FileWriter(filename));
+            output.write(length + " ");
+            output.write(mRows + " ");
+            output.write(nCols + " ");
+            output.write('\n');
+        }catch(IOException e){
+            System.out.println("File not found");
+            //  e.printStackTrace();
+            System.exit(1);
+        }
+        try {
+            for (int i = 0; i < length; i++) {
+                for (int j = 0; j < length; j++) {
+                    int value = weights.matrix[i][j];
+                    output.write(value + " ");
+                }
+                output.write("\n");
+            }
+        }catch(IOException e){
+            System.out.println("Error writing to file");
+            System.exit(1);
+        }
+        try {
+            output.close();
+        }catch (IOException e){
+            System.out.println("Error closing file");
+        }
+    }
 }

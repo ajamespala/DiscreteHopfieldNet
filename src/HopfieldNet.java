@@ -16,6 +16,7 @@ public class HopfieldNet {
 
         Vector [] vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
         BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/outputFile1.txt", vectors);
+        Vector [] newVectors = BipolarFileReader.vectorReader("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/outputFile1.txt",mRows,nCols,numInputVectors);
         Weights [] weights = new Weights[numInputVectors];
         for(int i = 0; i < numInputVectors; i++) {
             weights[i] = new Weights(vectors[i]);
@@ -26,6 +27,15 @@ public class HopfieldNet {
            // weights[i].printWeights();
         }
         Weights W = Weights.addWeights(weights);
+        BipolarFileWriter.weightsWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/weightsFile1.txt",W);
+        for(Vector v : newVectors){
+            v.printVector();
+        }
+
+        Weights newW = BipolarFileReader.weightReader("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/weightsFile1.txt");
+        newW.printWeights();
+
+
         //W.printWeights();
 
         //System.out.println("Num input vectors in vectors array: " + vectors.length);

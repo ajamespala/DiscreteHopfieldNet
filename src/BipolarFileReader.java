@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Scanner;
 public class BipolarFileReader {
     public static Vector[] vectorReader(String filename, int mRows, int nCols, int numInputVectors) {
         //TODO read in input vectors from file, return array of type vector
@@ -63,10 +64,15 @@ public class BipolarFileReader {
            }
 
        }
+        try {
+            input.close();
+        }catch (IOException e){
+            System.out.println("Error closing file");
+        }
        return vectors;
     }
 
-    public static Weights weightReader(String filename, int numInputVectors) {
+    public static Weights weightReader(String filename) {
         FileReader file = null;
         Weights weights = null;
         int length = 0;
@@ -80,32 +86,45 @@ public class BipolarFileReader {
             System.exit(1);
         }
         BufferedReader input = new BufferedReader(file);
+        Scanner in = null;
         try {
-            length = input.read();
+            in = new Scanner(new File(filename));
+            length = in.nextInt();
+            mRows = in.nextInt();
+            nCols = in.nextInt();
+          /*  length = input.read();
             input.read();
             mRows = input.read();
             input.read();
             nCols = input.read();
+            input.read(); */
         } catch (IOException e) {
             System.out.println("Error reading from file, first read");
             System.exit(1);
         }
         int [][] array = new int[length][length];
-        for (int i = 0; i < mRows; i++) {
-                try {
-                   String line = input.readLine();
-                   String [] token = line.split(" ");
-                   if(token.length != length)
-                       System.out.print("Length of the read line does not match entered length");
-                   for(int j = 0; i < token.length; j++){
-                       token[j].replace(" ","");
-                       array[i][j] = Integer.parseInt(token[j]);
-                   }
-                }catch (IOException e) {
-                    System.out.println("Error reading from file");
-                    System.exit(1);
-                }
+        for (int i = 0; i < length; i++) {
+                //try {
 
+                  // String line = input.readLine();
+                //   String [] token = line.split(" ");
+                   //for(String str : token){
+                 ///      System.out.println(str);
+                 //  }
+                  // if(token.length != length)
+                      // System.out.print("Length of the read line does not match entered length");
+                   for(int j = 0; j < length; j++){
+                       //token[j].replace("\n","");
+                        //while(in.hasNextInt()) {
+                            int tmp = in.nextInt();
+                            System.out.print(tmp);
+                            array[i][j] = tmp;
+                      //  }
+                   }
+              //  }catch (IOException e) {
+              //      System.out.println("Error reading from file");
+               //     System.exit(1);
+                //}
         }
         weights = new Weights(array, length, mRows, nCols);
 
@@ -115,7 +134,11 @@ public class BipolarFileReader {
             System.out.println("Error reading from file, last read");
             System.exit(1);
         }
-
+        try {
+            input.close();
+        }catch (IOException e){
+            System.out.println("Error closing file");
+        }
 
         return weights;
     }

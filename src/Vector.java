@@ -12,6 +12,25 @@ public class Vector {
         this.matrix = array;
     }
 
+    public void printVector(){
+        System.out.println("Length: " + mRows*nCols);
+        System.out.println("mRows: " + mRows);
+        System.out.println("nCols: " + nCols);
 
+        int index = 0;
+        for(int i = 0; i < mRows; i++){
+            for(int j = 0; j < mRows; j++){
+                int c = this.matrix[index];
+                if(c == 1)
+                    System.out.print("O");
+                else if(c == -1)
+                    System.out.print(" ");
+                else
+                    System.out.print("#");
+                index++;
+            }
+            System.out.println();
+        }
+    }
 
 }

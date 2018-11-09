@@ -19,7 +19,7 @@ public class HopfieldNet {
         //System.out.println("Num input vectors in vectors array: " + vectors.length);
         //for(int i = 0; i<numInputVectors; i++){
           //  for(int j = 0; j<vectors[0].matrix.length; j++) {
-         //       System.out.print(vectors[0].matrix[j]);
+              System.out.print(vectors[0].matrix.length);
        //     }
         //}
 

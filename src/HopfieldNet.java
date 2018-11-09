@@ -7,6 +7,8 @@ public class HopfieldNet {
 
         System.out.println("Enter training file name: ");
         String filename = kb.next();
+
+        //TODO: may have to read mRows and nCols from input vectors, not user input, although I am not sure if that is important
         System.out.println("Enter mRows: ");
         int mRows = kb.nextInt();
         System.out.println("Enter nCols: ");
@@ -34,6 +36,33 @@ public class HopfieldNet {
 
         Weights newW = BipolarFileReader.weightReader("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/weightsFile1.txt");
         newW.printWeights();
+
+        //TODO move to own function test
+        System.out.println("Enter testing file name: ");
+        String testfilename = kb.next();
+
+        //TODO: may have to read mRows and nCols from input vectors, not user input, although I am not sure if that is important
+        System.out.println("Enter mRows: ");
+        int testmRows = kb.nextInt();
+        System.out.println("Enter nCols: ");
+        int testnCols = kb.nextInt();
+        //TODO: check that these dimensions are the same as the training dimesions (can use mRows and nCols values in weights object)
+        System.out.println("Enter number of input vectors: ");
+        int testNumInputVectors = kb.nextInt();
+
+        int length = mRows * nCols;
+
+        Vector [] testVectors = BipolarFileReader.vectorReader(testfilename,testmRows,testnCols,testNumInputVectors);
+        Vector [] outputVectors = new Vector [testNumInputVectors];
+        for(Vector v : testVectors) {
+            Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);
+            int [] indexSeen = new int [length];
+
+
+
+        }
+
+
 
 
         //W.printWeights();

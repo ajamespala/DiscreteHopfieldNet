@@ -27,6 +27,8 @@ public class Weights {
         this.mRows = vector.mRows;
         this.nCols = vector.nCols;
     }
+
+    //outer product of array passed in, returns autoassociative nonzeroed weight matrix
     public int[][] getWeightsFromVector(int [] array){
         int [][] returnArray = new int[array.length][array.length];
         for(int i = 0; i < array.length; i++) {

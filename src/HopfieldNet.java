@@ -15,11 +15,22 @@ public class HopfieldNet {
         int numInputVectors = kb.nextInt();
 
         Vector [] vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
+        Weights [] weights = new Weights[numInputVectors];
+        for(int i = 0; i < numInputVectors; i++) {
+            weights[i] = new Weights(vectors[i]);
+            System.out.println("Initialized weights for #" + i);
+            weights[i].printWeights();
+            weights[i].zeroDiagonal();
+            System.out.println("Zeroed diagonal for #" + i);
+            weights[i].printWeights();
+        }
+        Weights W = Weights.addWeights(weights);
+        W.printWeights();
 
         //System.out.println("Num input vectors in vectors array: " + vectors.length);
         //for(int i = 0; i<numInputVectors; i++){
           //  for(int j = 0; j<vectors[0].matrix.length; j++) {
-              System.out.print(vectors[0].matrix.length);
+              //System.out.print(vectors[0].matrix.length);
        //     }
         //}
 

@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.stream.IntStream;
 import java.lang.*;
+import java.util.Arrays;
 public class HopfieldNet {
     public static void main(String [] args) {
         System.out.println("Welcome to a Discrete Neural Network System");
@@ -82,8 +83,12 @@ public class HopfieldNet {
             int [] indexSeen = new int [length];
             boolean continueCondition = true;
             int epochCount = 0;
+            int [] testArray = new int[length];
             while(continueCondition) {
                 boolean updated = false;
+                for(int j = 0; j < length; j++){
+                    testArray[j] = testVector.matrix[j];
+                }
                 for (int i = 0; i < length; i++) {
                     double rand = Math.random() * 100;
                     int random = (int)Math.floor(rand);
@@ -91,7 +96,9 @@ public class HopfieldNet {
                         rand = Math.random() * 100;
                         random = (int)Math.floor(rand);
                     }
-                    System.out.print(random + " ");
+                    //System.out.print(random + " ");
+
+
 
                     int beginInt = testVector.matrix[random];
 
@@ -102,7 +109,8 @@ public class HopfieldNet {
                     }
 
                     int y = activationFunc(y_in);
-                    testVector.matrix[random] = y;
+                   if(y != 0)
+                        testVector.matrix[random] = y;
                     if(y != beginInt)
                         updated = true;
                 }
@@ -115,9 +123,15 @@ public class HopfieldNet {
                //TODO: check for flipflop, ie has it seen this output vector before?
                 System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
                 epochCount++;
+
+                if(Arrays.equals(testVector.matrix, testArray))
+                    System.out.println("Same array");
+                else
+                    System.out.println("Different array");
             }
             outputVectors[index] = testVector;
             index++;
+
 
         }
         return outputVectors;
@@ -132,7 +146,7 @@ public class HopfieldNet {
         else if(y_in < 0)
             y = -1;
         else
-            y = y_in;
+            y = 0;
 
         return y;
     }

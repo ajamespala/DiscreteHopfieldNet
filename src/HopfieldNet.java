@@ -8,7 +8,9 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.lang.*;
 import java.util.Arrays;
+
 public class HopfieldNet {
+/*
 	public static void main(String [] args) {
 		System.out.println("Welcome to a Discrete Neural Network System");
 		//TODO: implement UI and call higher level function
@@ -59,25 +61,22 @@ public class HopfieldNet {
 		System.out.println("Enter number of input vectors: ");
 		int testNumInputVectors = kb.nextInt();
 
-
-		Vector [] outputVectors = test(W, testfilename, testmRows, testnCols, testNumInputVectors);
+		Vector [] outputVectors = testingMode(W, testfilename, testmRows, testnCols, testNumInputVectors);
 		BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/outputVectors/outputFile1.txt", outputVectors);
 
 		//W.printWeights();
-
 		//System.out.println("Num input vectors in vectors array: " + vectors.length);
 		//for(int i = 0; i<numInputVectors; i++){
 		//  for(int j = 0; j<vectors[0].matrix.length; j++) {
 		//System.out.print(vectors[0].matrix.length);
 		//     }
 		//}
-
 	}
+*/
 
 	// test simulates the Hopfield Neural Net
 	public static Vector[] test(Weights W, String testfilename, int testmRows, int testnCols, int testNumInputVectors){
 		Vector [] outputVectors = new Vector[testNumInputVectors];
-
 		int length = testmRows * testmRows;
 
 		Vector [] testVectors = BipolarFileReader.vectorReader(testfilename,testmRows,testnCols,testNumInputVectors);
@@ -93,6 +92,7 @@ public class HopfieldNet {
 				for(int j = 0; j < length; j++){
 					testArray[j] = testVector.matrix[j];
 				}
+
 				for (int i = 0; i < length; i++) {
 					double rand = Math.random() * 100;
 					int random = (int)Math.floor(rand);
@@ -100,10 +100,10 @@ public class HopfieldNet {
 						rand = Math.random() * 100;
 						random = (int)Math.floor(rand);
 					}
-					//System.out.print(random + " ");
 					int beginInt = testVector.matrix[random];
 					int y_in = testVector.matrix[random];
 
+					// calculate y_in for i = 1, 2,..., n
 					for (int j = 0; j < length; j++) {
 						y_in += testVector.matrix[j] * W.matrix[j][random];
 					}
@@ -155,59 +155,103 @@ public class HopfieldNet {
 
 }
 
-/*
+public static void main(String[]args){
+	Scanner kb = new Scanner(System.in);
+	System.out.println("\n Welcome to the Hopfield Neural Network");
+	while(true){
+		int mode = handleInput();
+		if(mode == 1){
+			trainingMode();
+		} else{
+			testingMode();
+		}
+		System.out.println("Enter a 1 to enter testing mode.  Enter 2 to quit.");
+		int test = kb.nextInt();
+		if(test == 1)
+			break;
+		else
+			testingMode();
 
-   public Hopfield {
+		System.out.println();
 
-   public static void main(String[]args){
-   Scanner kb = new Scanner(System.in);
-   System.out.println("\n Welcome to the Hopfield Neural Network");
-   while(true){
-   int mode = handleInput();
-   if(mode == 1){
-   trainingMode();
-   } else{
-   testingMode();
-   }
-   System.out.println();
-   System.out.println();
-
-   System.out.println("Would you like to run again? Y/N");
-   String again = kb.nextLine();
-   if(again.toLowerCase().contains("y"))
-   continue;
-   else
-   break;
-   }
-   }
+		System.out.println("Would you like to run again? Y/N");
+		String again = kb.nextLine();
+		if(again.toLowerCase().contains("y"))
+			continue;
+		else
+			break;
+	}
+}
 
 // handles the user input and checks for invalid inputs
 public static int handleInput(){
-Scanner kb = new Scanner(System.in);
-System.out.println("Enter 1 to enter the training mode, enter 2 to enter the testing mode.");
-int mode = kb.nextInt();
-while(mode != 1 && mode != 2){
-System.out.println("Invalid. Please enter again.");
-mode = kb.nextInt();
-}
-return mode;
+	Scanner kb = new Scanner(System.in);
+	System.out.println("Enter 1 to enter the training mode, enter 2 to enter the testing mode.");
+	int mode = kb.nextInt();
+	while(mode != 1 && mode != 2){
+		System.out.println("Invalid. Please enter again.");
+		mode = kb.nextInt();
+	}
+	return mode;
 }
 
 // handles training mode
 public static boolean trainingMode(){
+	Scanner kb = new Scanner(System.in);
+	System.out.println("Enter training file name: ");
+	String filename = kb.next();
 
+	System.out.println("Enter mRows: ");
+	int mRows = kb.nextInt();
+	System.out.println("Enter nCols: ");
+	int nCols = kb.nextInt();
+	System.out.println("Enter number of input vectors: ");
+	int numInputVectors = kb.nextInt();
+	System.out.println("Enter a filename to save the vectors: ");
+	String vectorFilename = kb.next();
+
+	Vector[] vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
+	BipolarFileWriter.vectorWriter(vectorFilename, vectors);
+	Vector[] newVectors = BipolarFileReader.vectorReader(vectorFilename, mRows, nCols, numInputVectors);
+	Weights[] weights = new Weights[numInputVectors];
+
+	Weights W = initWeightMatrix(numInputVectors, weights, newVectors);
+	System.out.println("Enter a filename to save the weight matrix: ");
+	String weightFilename = kb.next();
+	BipolarFileWriter.weightsWriter(weightFilename, W);
+	return true;
+}
+
+// method that generates a weight matrix = sum of weight matrices from S^T*t
+public static Weights initWeightMatrix(int numVectors, Weights[] weights, Vector[] newVectors){
+	for(int i = 0; i < numVectors; i++) {
+		weights[i] = new Weights(vectors[i]);
+		weights[i].zeroDiagonal();
+	}
+	Weights W = Weights.addWeights(weights);
+	return W;
 }
 
 // handles testing mode
 public static boolean testingMode(){
+	Scanner kb = new Scanner(System.in);
+	System.out.println("Enter testing file name: ");
+	String filename = kb.next();
 
+	System.out.println("Enter mRows: ");
+	int mRows = kb.nextInt();
+	System.out.println("Enter nCols: ");
+	int nCols = kb.nextInt();
+	System.out.println("Enter number of input vectors: ");
+	int numInputVectors = kb.nextInt();
+	Vector [] outputVectors = test(W, filename, mRows, nCols, numInputVectors);
+	BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/outputVectors/outputFile1.txt", outputVectors);
+
+	return true;
 }
 
-// method that generates a weight matrix = sum of weight matrices from S^T*t
-public static initWeightMatrix(){
 
-}
-
+/*
 // for training mode - method reads image file
 public static boolean readImageFile(String fileName){
 BufferedReader input = null;
@@ -231,21 +275,54 @@ Sample newSample;
 
 // read in matrix into a 2D array
 for(int i = 0; i < nRows; i++){
-	st = new StringTokenizer(thisLine);
-	for(int j = 0; j < mCols; j++){
-		if(st.hasMoreTokens()){
-			images[i][j] = Integer.parseInt(st.nextToken(" "));
-		}
-	}
-	thisLine = input.readLine();
-	if(thisLine == null)
-		break;
+st = new StringTokenizer(thisLine);
+for(int j = 0; j < mCols; j++){
+if(st.hasMoreTokens()){
+images[i][j] = Integer.parseInt(st.nextToken(" "));
+}
+}
+thisLine = input.readLine();
+if(thisLine == null)
+break;
 }
 
 }
 }catch(EOFException e){
-	System.out.println("End of File");
-	return false;
+System.out.println("End of File");
+return false;
+}
+catch(FileNotFoundException e){
+System.out.println("File Not Found");
+return false;
+}
+catch(IOException e) {
+System.out.println("Error reading/writing file");
+return false;
+}
+finally{
+if(input != null){
+try{
+input.close();
+}
+catch(IOException e){
+System.out.println("Error Closing");
+System.exit(1);
+}
+}
+}
+return true;
+}
+
+// for training mode - simulates the Hopfield Neural Net implementing the Hebbian Learning Rule
+public static boolean writeWeightMatrix(String fileName){
+BufferedWriter output = null;
+try{
+output = new BufferedWriter(new FileWriter(filename));
+
+// TODO: write weight matrix to file
+}
+catch(EOFException e){
+System.out.println("End of File");
 }
 catch(FileNotFoundException e){
 	System.out.println("File Not Found");
@@ -256,51 +333,18 @@ catch(IOException e) {
 	return false;
 }
 finally{
-	if(input != null){
+	if(output != null){
 		try{
-			input.close();
+			output.flush();
+			output.close();
 		}
 		catch(IOException e){
 			System.out.println("Error Closing");
 			System.exit(1);
 		}
 	}
+	return true;
 }
-return true;
-}
-
-// for training mode - simulates the Hopfield Neural Net implementing the Hebbian Learning Rule
-public static boolean writeWeightMatrix(String fileName){
-	BufferedWriter output = null;
-	try{
-		output = new BufferedWriter(new FileWriter(filename));
-
-		// TODO: write weight matrix to file
-	}
-	catch(EOFException e){
-		System.out.println("End of File");
-	}
-	catch(FileNotFoundException e){
-		System.out.println("File Not Found");
-		return false;
-	}
-	catch(IOException e) {
-		System.out.println("Error reading/writing file");
-		return false;
-	}
-	finally{
-		if(output != null){
-			try{
-				output.flush();
-				output.close();
-			}
-			catch(IOException e){
-				System.out.println("Error Closing");
-				System.exit(1);
-			}
-		}
-		return true;
-	}
 }
 
 // for testing mode
@@ -370,7 +414,6 @@ public static boolean writeResultsFile(String fileName){
 		}
 		return true;
 	}
-}
 }
 */
 

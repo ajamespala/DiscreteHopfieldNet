@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.stream.IntStream;
+import java.lang.*;
 public class HopfieldNet {
     public static void main(String [] args) {
         System.out.println("Welcome to a Discrete Neural Network System");
@@ -50,17 +52,9 @@ public class HopfieldNet {
         System.out.println("Enter number of input vectors: ");
         int testNumInputVectors = kb.nextInt();
 
-        int length = mRows * nCols;
 
-        Vector [] testVectors = BipolarFileReader.vectorReader(testfilename,testmRows,testnCols,testNumInputVectors);
-        Vector [] outputVectors = new Vector [testNumInputVectors];
-        for(Vector v : testVectors) {
-            Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);
-            int [] indexSeen = new int [length];
-
-
-
-        }
+        Vector [] outputVectors = test(W, testfilename, testmRows, testnCols, testNumInputVectors);
+        BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/outputVectors/outputFile1.txt", outputVectors);
 
 
 
@@ -76,6 +70,61 @@ public class HopfieldNet {
 
     }
 
+    public static Vector[] test(Weights W, String testfilename, int testmRows, int testnCols, int testNumInputVectors){
+        Vector [] outputVectors = new Vector[testNumInputVectors];
+
+        int length = testmRows * testmRows;
+
+        Vector [] testVectors = BipolarFileReader.vectorReader(testfilename,testmRows,testnCols,testNumInputVectors);
+        int index = 0;
+        for(Vector v : testVectors) {
+            Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);
+            int [] indexSeen = new int [length];
+            boolean updated = true;
+            while(updated) {
+                updated = false;
+                for (int i = 0; i < length; i++) {
+                    int random = (int) Math.random() * 100;
+                    while (Arrays.asList(indexSeen).contains(random)) {
+                        random = (int) Math.random() * 100;
+                    }
+                    System.out.print(random + " ");
+
+                    int y_in = testVector.matrix[random];
+
+                    for (int j = 0; j < length; j++) {
+                        y_in += testVector.matrix[j] * W.matrix[j][random];
+                    }
+
+                    int y = activationFunc(y_in);
+                    testVector.matrix[random] = y;
+                  //  System.out.println("Y_IN:" + y_in);
+                   // System.out.println("New y:" + y);
+                    if(y != testVector.matrix[random])
+                        updated = true;
+                }
+               //TODO: check for flipflop, ie has it seen this output vector before?
+            }
+            outputVectors[index] = testVector;
+            index++;
+            System.out.println("Epoch " + index);
+        }
+        return outputVectors;
+    }
+
+    //TODO: make theta user-set (right now theta is hardcoded to 0
+    public static int activationFunc(int y_in){
+        int y = 0;
+
+        if(y_in > 0)
+            y = 1;
+        else if(y_in < 0)
+            y = -1;
+        else
+            y = y_in;
+
+        return y;
+    }
     //TODO: create functions that implement the testing algorithm
         //TODO: need to verify testing vectors are same dimensions as training vectors
         //ie weights file will match testing vectors (which also matches training

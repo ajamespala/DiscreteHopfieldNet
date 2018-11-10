@@ -43,15 +43,15 @@ public class BipolarFileWriter {
                         index++;
                         if(value == -1){
                             output.write(' ');
-                            System.out.println("Writing for -1");
+
                         }
                         else if(value == 1) {
                             output.write('O');
-                            System.out.println("Writing for 1");
+
                         }
                         else {
                             output.write('#');
-                            System.out.println("Writing for #");
+
                         }
 
                     }catch (IOException e) {

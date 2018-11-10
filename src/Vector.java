@@ -8,11 +8,12 @@
 public class Vector {
 	public int [] matrix;
 	public int mRows, nCols;
-
+	public int length;
+	
 	//TODO: create constructor and class for vectors
 
 	public Vector (int mRows, int nCols, int [] array){
-		int length = mRows * nCols;
+		this.length = mRows * nCols;
 		this.matrix = new int [length];
 		this.mRows = mRows;
 		this.nCols = nCols;
@@ -20,7 +21,7 @@ public class Vector {
 	}
 
 	public void printVector(){
-		System.out.println("Length: " + mRows*nCols);
+		System.out.println("Length: " + length);
 		System.out.println("mRows: " + mRows);
 		System.out.println("nCols: " + nCols);
 

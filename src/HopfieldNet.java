@@ -101,31 +101,38 @@ public class HopfieldNet {
 		int nCols = kb.nextInt();
 		System.out.println("Enter number of input vectors: ");
 		int numInputVectors = kb.nextInt();
+		System.out.println("Enter output file name: ");
+		String outputFile = kb.next();
+		
 		Vector [] outputVectors = test(W, filename, mRows, nCols, numInputVectors);
-		BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/outputVectors/outputFile1.txt", outputVectors);
+		BipolarFileWriter.vectorWriter(outputFile, outputVectors);
 
 		return true;
 	}
 
 	// test simulates the Hopfield Neural Net
-	public static Vector[] test(Weights W, String testfilename, int testmRows, int testnCols, int testNumInputVectors){
+	public static Vector[] test(Weights W, String filename, int testmRows, int testnCols, int testNumInputVectors){
 		Vector [] outputVectors = new Vector[testNumInputVectors];
 		int length = testmRows * testmRows;
-
-		Vector [] testVectors = BipolarFileReader.vectorReader(testfilename,testmRows,testnCols,testNumInputVectors);
+		Vector [] testVectors = BipolarFileReader.vectorReader(filename,testmRows,testnCols,testNumInputVectors);
 		int index = 0;
+		
+		// go through each test vector and adjust weights as needed
 		for(Vector v : testVectors) {
-			Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);
+			Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);  // y vector 
 			int [] indexSeen = new int [length];
 			boolean continueCondition = true;
 			int epochCount = 0;
 			int [] testArray = new int[length];
+			
+			// simulates the Hopfield Neural Net implementing the Hebbian Learning Rule
 			while(continueCondition) {
 				boolean updated = false;
 				for(int j = 0; j < length; j++){
 					testArray[j] = testVector.matrix[j];
 				}
-
+	
+				// randomly choose x_i from the testVector to calculate y_in
 				for (int i = 0; i < length; i++) {
 					double rand = Math.random() * 100;
 					int random = (int)Math.floor(rand);
@@ -179,15 +186,25 @@ public class HopfieldNet {
 			y = -1;
 		else
 			y = 0;
-
 		return y;
 	}
-	//TODO: create functions that implement the testing algorithm
+	
 	//TODO: need to verify testing vectors are same dimensions as training vectors
 	//ie weights file will match testing vectors (which also matches training
+	
+	// verifyVectors checks if the input and output vectors are the same, else return false
+	public static boolean verifyVectors(Vector input, Vector output){
+		
+		for(int i = 0; i < length; i++){
+			if(input[i] != output[i])
+				return false;
+		}
+		
+		return true;
+	}
 }
 
-// for training mode - simulates the Hopfield Neural Net implementing the Hebbian Learning Rule
+// for training mode - 
 /*
    public static void main(String [] args) {
    System.out.println("Welcome to a Discrete Neural Network System");

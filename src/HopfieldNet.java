@@ -13,19 +13,23 @@ public class HopfieldNet {
 	public static void main(String[]args){
 		Scanner kb = new Scanner(System.in);
 		System.out.println("\n Welcome to the Hopfield Neural Network");
+		Weights W = null;
 		while(true){
 			int mode = handleInput();
 			if(mode == 1){
-				trainingMode();
+				W = trainingMode();
 			} else{
-				testingMode();
+				System.out.println("Enter the weight file name you wish to use: ");
+				String weightFile = kb.next();
+				W = BipolarFileReader.weightReader(weightFile);
+				testingMode(W);
 			}
 			System.out.println("Enter a 1 to enter testing mode.  Enter 2 to quit.");
 			int test = kb.nextInt();
 			if(test == 1)
 				break;
 			else
-				testingMode();
+				testingMode(W);
 
 			System.out.println("Would you like to run again? Y/N");
 			String again = kb.nextLine();
@@ -49,7 +53,7 @@ public class HopfieldNet {
 	}
 
 	// handles training mode
-	public static boolean trainingMode(){
+	public static Weights trainingMode(){
 		Scanner kb = new Scanner(System.in);
 		System.out.println("Enter training file name: ");
 		String filename = kb.next();
@@ -72,11 +76,11 @@ public class HopfieldNet {
 		System.out.println("Enter a filename to save the weight matrix: ");
 		String weightFilename = kb.next();
 		BipolarFileWriter.weightsWriter(weightFilename, W);
-		return true;
+		return W;
 	}
 
 	// method that generates a weight matrix = sum of weight matrices from S^T*t
-	public static Weights initWeightMatrix(int numVectors, Weights[] weights, Vector[] newVectors){
+	public static Weights initWeightMatrix(int numVectors, Weights[] weights, Vector[] vectors){
 		for(int i = 0; i < numVectors; i++) {
 			weights[i] = new Weights(vectors[i]);
 			weights[i].zeroDiagonal();
@@ -86,7 +90,7 @@ public class HopfieldNet {
 	}
 
 	// handles testing mode
-	public static boolean testingMode(){
+	public static boolean testingMode(Weights W){
 		Scanner kb = new Scanner(System.in);
 		System.out.println("Enter testing file name: ");
 		String filename = kb.next();

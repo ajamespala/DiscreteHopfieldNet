@@ -235,8 +235,8 @@ public class HopfieldNet {
 	public static int numCorrect(Vector[] inputVectors, Vector[] outputVectors){
 		int count = 0;
 		for(int i = 0; i < inputVectors.length; i++){
-			if(!checkDimensions(input, output)){
-				if(verifyVector(inputVectors[i], outputVectors[i]))
+			if(!checkDimensions(inputVectors[i], outputVectors[i])){
+				if(verifyVectors(inputVectors[i], outputVectors[i]))
 					count++;
 			}
 		}

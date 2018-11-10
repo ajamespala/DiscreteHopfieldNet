@@ -14,6 +14,7 @@ public class HopfieldNet {
 		Scanner kb = new Scanner(System.in);
 		System.out.println("\n Welcome to the Hopfield Neural Network");
 		Weights W = null;
+		
 		while(true){
 			int mode = handleInput();
 			if(mode == 1){
@@ -24,13 +25,15 @@ public class HopfieldNet {
 				W = BipolarFileReader.weightReader(weightFile);
 				testingMode(W);
 			}
+			
+			// ask user if they want to go directly into testing mode 
 			System.out.println("Enter a 1 to enter testing mode.  Enter 2 to quit.");
 			int test = kb.nextInt();
 			if(test == 1)
-				break;
-			else
 				testingMode(W);
-
+			else
+				break;
+			
 			System.out.println("Would you like to run again? Y/N");
 			String again = kb.nextLine();
 			if(again.toLowerCase().contains("y"))
@@ -107,6 +110,10 @@ public class HopfieldNet {
 		Vector [] outputVectors = test(W, filename, mRows, nCols, numInputVectors);
 		BipolarFileWriter.vectorWriter(outputFile, outputVectors);
 
+		// TODO: call numCorrect function
+		//int correctVectors = numCorrect(/*inputVectors goes here but how do we get it...*/,outputVectors);
+		//System.out.println("Number of vectors correctly identified: " + correctVectors);
+		
 		return true;
 	}
 
@@ -131,7 +138,9 @@ public class HopfieldNet {
 				for(int j = 0; j < length; j++){
 					testArray[j] = testVector.matrix[j];
 				}
-	
+				
+				// TODO: could put in another function that computes y_in for i to n, applies activiation function and broadcasts y
+				// -----------------------------------------------------------------------------------------------------------------
 				// randomly choose x_i from the testVector to calculate y_in
 				for (int i = 0; i < length; i++) {
 					double rand = Math.random() * 100;
@@ -154,6 +163,8 @@ public class HopfieldNet {
 					if(y != beginInt)
 						updated = true;
 				}
+				// -----------------------------------------------------------------------------------------------------------------
+				
 				if(updated)
 					continueCondition = true;
 				else
@@ -189,22 +200,46 @@ public class HopfieldNet {
 		return y;
 	}
 	
-	//TODO: need to verify testing vectors are same dimensions as training vectors
 	//ie weights file will match testing vectors (which also matches training
 	
 	// verifyVectors checks if the input and output vectors are the same, else return false
 	public static boolean verifyVectors(Vector input, Vector output){
+		// check for equal dimensions
+		if(!checkDimensions(input, output))
+			return false;
 		
-		for(int i = 0; i < length; i++){
-			if(input[i] != output[i])
+		// check vector matrix 
+		for(int i = 0; i < input.length; i++){
+			if(input.matrix[i] != output.matrix[i])
 				return false;
 		}
 		
 		return true;
 	}
+	
+	//TODO: need to verify testing vectors are same dimensions as training vectors
+	public static boolean checkDimensions(Vector input, Vector output){
+		if((input.mRows != output.mRows) || (input.nCols != input.nCols))
+			return false;
+		if(input.length != output.length)  // TODO: James check - may be unnecessary
+			return false;
+		return true;
+	}
+	
+	// numCorrect counts the number of correct vectors after training and testing
+	public static int numCorrect(Vector[] inputVectors, Vector[] outputVectors){
+		int count = 0;
+		for(int i = 0; i < inputVectors.length; i++){
+			if(!checkDimensions(input, output)){
+				if(verifyVector(inputVectors[i], outputVectors[i]))
+					count++;
+			}
+		}
+		return count;
+	}
 }
 
-// for training mode - 
+
 /*
    public static void main(String [] args) {
    System.out.println("Welcome to a Discrete Neural Network System");

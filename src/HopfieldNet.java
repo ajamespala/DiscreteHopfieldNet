@@ -104,10 +104,12 @@ public class HopfieldNet {
 		int nCols = kb.nextInt();
 		System.out.println("Enter number of input vectors: ");
 		int numInputVectors = kb.nextInt();
+		System.out.println("Enter a value for the threshold theta: ");
+		double theta = kb.nextDouble();
 		System.out.println("Enter output file name: ");
 		String outputFile = kb.next();
 		
-		Vector [] outputVectors = test(W, filename, mRows, nCols, numInputVectors);
+		Vector [] outputVectors = test(W, filename, mRows, nCols, numInputVectors, theta);
 		BipolarFileWriter.vectorWriter(outputFile, outputVectors);
 
 		// TODO: call numCorrect function
@@ -118,7 +120,7 @@ public class HopfieldNet {
 	}
 
 	// test simulates the Hopfield Neural Net
-	public static Vector[] test(Weights W, String filename, int testmRows, int testnCols, int testNumInputVectors){
+	public static Vector[] test(Weights W, String filename, int testmRows, int testnCols, int testNumInputVectors, double theta){
 		Vector [] outputVectors = new Vector[testNumInputVectors];
 		int length = testmRows * testmRows;
 		Vector [] testVectors = BipolarFileReader.vectorReader(filename,testmRows,testnCols,testNumInputVectors);
@@ -156,8 +158,11 @@ public class HopfieldNet {
 					for (int j = 0; j < length; j++) {
 						y_in += testVector.matrix[j] * W.matrix[j][random];
 					}
-
-					int y = activationFunc(y_in);
+					
+					// calculate y = f(y_in) applying the activation function
+					int y = activationFunc(y_in, theta);
+					
+					// if there are changes on activation function, loop again and broadcast
 					if(y != 0)
 						testVector.matrix[random] = y;
 					if(y != beginInt)
@@ -175,6 +180,7 @@ public class HopfieldNet {
 				System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
 				epochCount++;
 
+				//TODO: question - this verifies the vectors? Can put in verify vector function here if you want
 				if(Arrays.equals(testVector.matrix, testArray))
 					System.out.println("Same array");
 				else
@@ -186,14 +192,13 @@ public class HopfieldNet {
 		return outputVectors;
 	}
 
-	//TODO: make theta user-set (right now theta is hardcoded to 0
 	// activationFunc calculates the value of y as a result of the activiation function with input y_in
-	public static int activationFunc(int y_in){
+	public static int activationFunc(int y_in, double theta){  
 		int y = 0;
 
-		if(y_in > 0)
+		if(y_in > theta)
 			y = 1;
-		else if(y_in < 0)
+		else if(y_in < theta)
 			y = -1;
 		else
 			y = 0;

@@ -80,15 +80,20 @@ public class HopfieldNet {
         for(Vector v : testVectors) {
             Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);
             int [] indexSeen = new int [length];
-            boolean updated = true;
-            while(updated) {
-                updated = false;
+            boolean continueCondition = true;
+            int epochCount = 0;
+            while(continueCondition) {
+                boolean updated = false;
                 for (int i = 0; i < length; i++) {
-                    int random = (int) Math.random() * 100;
+                    double rand = Math.random() * 100;
+                    int random = (int)Math.floor(rand);
                     while (Arrays.asList(indexSeen).contains(random)) {
-                        random = (int) Math.random() * 100;
+                        rand = Math.random() * 100;
+                        random = (int)Math.floor(rand);
                     }
                     System.out.print(random + " ");
+
+                    int beginInt = testVector.matrix[random];
 
                     int y_in = testVector.matrix[random];
 
@@ -98,16 +103,22 @@ public class HopfieldNet {
 
                     int y = activationFunc(y_in);
                     testVector.matrix[random] = y;
-                  //  System.out.println("Y_IN:" + y_in);
-                   // System.out.println("New y:" + y);
-                    if(y != testVector.matrix[random])
+                    if(y != beginInt)
                         updated = true;
                 }
+                if(updated)
+                    continueCondition = true;
+                else
+                    continueCondition = false;
+                //if(epochCount > 100)
+               //     continueCondition = false;
                //TODO: check for flipflop, ie has it seen this output vector before?
+                System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
+                epochCount++;
             }
             outputVectors[index] = testVector;
             index++;
-            System.out.println("Epoch " + index);
+
         }
         return outputVectors;
     }

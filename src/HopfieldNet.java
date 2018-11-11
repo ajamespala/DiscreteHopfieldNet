@@ -31,11 +31,9 @@ public class HopfieldNet {
 			int test = kb.nextInt();
 			if(test == 1)
 				testingMode(W);
-			else
-				break;
 			
 			System.out.println("Would you like to run again? Y/N");
-			String again = kb.nextLine();
+			String again = kb.next();
 			if(again.toLowerCase().contains("y"))
 				continue;
 			else
@@ -58,24 +56,23 @@ public class HopfieldNet {
 	// handles training mode
 	public static Weights trainingMode(){
 		Scanner kb = new Scanner(System.in);
-		System.out.println("Enter training file name: ");
-		String filename = kb.next();
-
 		System.out.println("Enter mRows: ");
 		int mRows = kb.nextInt();
 		System.out.println("Enter nCols: ");
 		int nCols = kb.nextInt();
 		System.out.println("Enter number of input vectors: ");
 		int numInputVectors = kb.nextInt();
-		System.out.println("Enter a filename to save the vectors: ");
-		String vectorFilename = kb.next();
-
-		Vector[] vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
-		BipolarFileWriter.vectorWriter(vectorFilename, vectors);
-		Vector[] newVectors = BipolarFileReader.vectorReader(vectorFilename, mRows, nCols, numInputVectors);
+	
+		Vector[] vectors = null;	
+		while(vectors != null){
+			System.out.println("Enter training file name: ");
+			String filename = kb.next();
+			vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
+		}
+		
 		Weights[] weights = new Weights[numInputVectors];
 
-		Weights W = initWeightMatrix(numInputVectors, weights, newVectors);
+		Weights W = initWeightMatrix(numInputVectors, weights, vectors);
 		System.out.println("Enter a filename to save the weight matrix: ");
 		String weightFilename = kb.next();
 		BipolarFileWriter.weightsWriter(weightFilename, W);

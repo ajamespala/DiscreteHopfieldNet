@@ -32,7 +32,7 @@ public class BipolarFileWriter {
 		}catch(IOException e){
 			System.out.println("File not found");
 			//  e.printStackTrace();
-			System.exit(1);
+			//System.exit(1);
 		}
 
 		for(int k = 0; k < numInputVectors; k++) {

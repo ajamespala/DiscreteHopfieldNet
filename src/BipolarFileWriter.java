@@ -31,8 +31,6 @@ public class BipolarFileWriter {
 			output.write('\n');
 		}catch(IOException e){
 			System.out.println("File not found");
-			//  e.printStackTrace();
-			//System.exit(1);
 		}
 
 		for(int k = 0; k < numInputVectors; k++) {
@@ -41,7 +39,6 @@ public class BipolarFileWriter {
 			int nCols = vectors[k].nCols;
 			int length = mRows * nCols;
 
-
 			for (int i = 0; i < mRows; i++) {
 				for (int j = 0; j < nCols; j++) {
 					try {
@@ -49,15 +46,12 @@ public class BipolarFileWriter {
 						index++;
 						if(value == -1){
 							output.write(' ');
-
 						}
 						else if(value == 1) {
 							output.write('O');
-
 						}
 						else {
 							output.write('#');
-
 						}
 
 					}catch (IOException e) {
@@ -84,7 +78,6 @@ public class BipolarFileWriter {
 			System.out.println("Error closing file");
 		}
 	}
-	//TODO: write weights to file
 
 	// weightsWriter writes the weight matrix to a specified file
 	public static void weightsWriter(String filename, Weights weights){
@@ -93,7 +86,6 @@ public class BipolarFileWriter {
 		int nCols = weights.nCols;
 		int length = mRows * nCols;
 		try {
-			// System.out.print(filename);
 			output = new BufferedWriter(new FileWriter(filename));
 			output.write(length + " ");
 			output.write(mRows + " ");
@@ -101,7 +93,6 @@ public class BipolarFileWriter {
 			output.write('\n');
 		}catch(IOException e){
 			System.out.println("File not found");
-			//  e.printStackTrace();
 			System.exit(1);
 		}
 		try {

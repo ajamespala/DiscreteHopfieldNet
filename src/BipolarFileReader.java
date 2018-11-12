@@ -1,15 +1,14 @@
 /* Filename: BipolarFileReader.java
  * Description: BipolarFileReader reads the vector file that stores the images.
  * Names: James Pala and Taylor Wong
- * Date: November 9th, 2018
+ * Date: November 11th, 2018
  */
 
 import java.io.*;
 import java.util.Scanner;
 public class BipolarFileReader {
-	// vectorReader reads the vectors from a specified file
+	// vectorReader reads the vectors from a specified file and return array of type vector
 	public static Vector[] vectorReader(String filename, int mRows, int nCols, int numInputVectors) {
-		//TODO read in input vectors from file, return array of type vector
 		FileReader file = null;
 		Vector [] vectors = new Vector [numInputVectors];
 		try {
@@ -36,11 +35,8 @@ public class BipolarFileReader {
 			for (int i = 0; i < mRows; i++) {
 				for (int j = 0; j <= nCols; j++) {
 					try {
-						//System.out.println(index);
 						char c = (char) input.read();
 						System.out.print(c);
-
-						//c = (char)input.read();
 						if (c == ' ') {
 							array[index] = -1;
 							index++;
@@ -60,6 +56,7 @@ public class BipolarFileReader {
 					}
 				}
 			}
+			System.out.println("index is " + index + " when k is " + k);
 			vectors[k] = new Vector(mRows, nCols, array);
 
 			try {

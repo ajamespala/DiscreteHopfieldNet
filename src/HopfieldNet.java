@@ -28,9 +28,9 @@ public class HopfieldNet {
 		while(true){
 			int mode = handleInput();
 			if(mode == 1){
-				System.out.println("Enter training file name: ");
-				trainingFile = kb.next();
-				W = trainingMode(trainingFile);
+				System.out.println("Enter a filename to save the weight matrix: ");
+				weightFile = kb.next();
+				W = trainingMode(weightFile);
 			} else{
 				System.out.println("Enter testing file name: ");
 				testFile = kb.next();
@@ -38,11 +38,8 @@ public class HopfieldNet {
 				weightFile = kb.next();
 				outputVectors = testingMode(weightFile, testFile);
 				// save results to a file - vectors, num correct, etc.s	
-				System.out.println("Enter a filename to save the results to: ");
-				resultsFile = kb.next();
-				writeResultsFile(testFile, outputVectors, resultsFile);			
+				writeResultsFile(testFile, outputVectors);			
 			}
-
 
 			// ask user if they want to go directly into testing mode 
 			System.out.println("Enter a 1 to enter testing mode.  Enter 2 to quit.");
@@ -50,17 +47,15 @@ public class HopfieldNet {
 			if(test == 1){
 				System.out.println("Enter testing file name: ");
 				testFile = kb.next();
-				System.out.println("Enter the weight file name you wish to use: ");
-				weightFile = kb.next();
 				outputVectors = testingMode(weightFile, testFile);
 				// save results to a file - vectors, num correct, etc.s	
-				System.out.println("Enter a filename to save the results to: ");
-				resultsFile = kb.next();
-				writeResultsFile(testFile, outputVectors, resultsFile);			
+				writeResultsFile(testFile, outputVectors);			
 			}
-
-			System.out.println("Would you like to run again? Y/N");
-			String again = kb.next();
+			String again = " "; 
+			if(test != 2){
+				System.out.println("Would you like to run again? Y/N");
+				again = kb.next();
+			}
 			if(again.toLowerCase().contains("y"))
 				continue;
 			else
@@ -81,8 +76,10 @@ public class HopfieldNet {
 	}
 
 	// handles training mode
-	public static Weights trainingMode(String trainingFile){
+	public static Weights trainingMode(String weightFile){
 		Scanner kb = new Scanner(System.in);
+		System.out.println("Enter training file name: ");
+		String filename = kb.next();
 		System.out.println("Enter mRows: ");
 		int mRows = kb.nextInt();
 		System.out.println("Enter nCols: ");
@@ -90,20 +87,11 @@ public class HopfieldNet {
 		System.out.println("Enter number of input vectors: ");
 		int numInputVectors = kb.nextInt();
 
-		Vector[] vectors = BipolarFileReader.vectorReader(trainingFile, mRows, nCols, numInputVectors);
-		//Vector[] vectors = null;	
-		//while(vectors != null){
-		//	System.out.println("Enter training file name: ");
-		//	String filename = kb.next();
-		//	vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
-		//}
-
+		Vector[] vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
 		Weights[] weights = new Weights[numInputVectors];
-
 		Weights W = initWeightMatrix(numInputVectors, weights, vectors);
-		System.out.println("Enter a filename to save the weight matrix: ");
-		String weightFilename = kb.next();
-		BipolarFileWriter.weightsWriter(weightFilename, W);
+		BipolarFileWriter.weightsWriter(weightFile, W);
+
 		return W;
 	}
 
@@ -123,12 +111,12 @@ public class HopfieldNet {
 		Weights W = BipolarFileReader.weightReader(weightFile);
 		int mRows = W.mRows;
 		int nCols = W.nCols;
+		System.out.println("Enter output file name (just saves output vectors, see next prompt for more): ");
+		String outputFile = kb.next();
 		System.out.println("Enter number of input vectors: ");
 		int numInputVectors = kb.nextInt();
 		System.out.println("Enter a value for the threshold theta: ");
 		double theta = kb.nextDouble();
-		System.out.println("Enter output file name: ");
-		String outputFile = kb.next();
 
 		Vector [] outputVectors = test(W, testFile, mRows, nCols, numInputVectors, theta);
 		Vector [] testVectors = BipolarFileReader.vectorReader(testFile, W.mRows, W.nCols, numInputVectors);
@@ -147,19 +135,18 @@ public class HopfieldNet {
 		Vector [] outputVectors = new Vector[testNumInputVectors];
 		int length = testmRows * testmRows;
 		Vector [] testVectors = BipolarFileReader.vectorReader(filename,testmRows,testnCols,testNumInputVectors);
+		boolean continueCondition = true;
+		while(continueCondition) {
 		int index = 0;
-		//boolean sameDim = false;
 
 		// go through each test vector and adjust weights as needed
 		for(Vector v : testVectors) {
 			Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);  // y vector 
 			int [] indexSeen = new int [length];
-			boolean continueCondition = true;
 			int epochCount = 0;
 			int [] testArray = new int[length];
 
 			// simulates the Hopfield Neural Net implementing the Hebbian Learning Rule
-			while(continueCondition) {
 				boolean updated = false;
 				for(int j = 0; j < length; j++){
 					testArray[j] = testVector.matrix[j];
@@ -191,7 +178,6 @@ public class HopfieldNet {
 						testVector.matrix[random] = y;
 					if(y != beginInt)
 						updated = true;
-				}
 				// -----------------------------------------------------------------------------------------------------------------
 
 				if(updated)
@@ -201,17 +187,18 @@ public class HopfieldNet {
 				//if(epochCount > 100)
 				//     continueCondition = false;
 				//TODO: check for flipflop, ie has it seen this output vector before?
-				System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
+				//System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
 				epochCount++;
 
 				//TODO: question - this verifies the vectors? Can put in verify vector function here if you want
-				if(Arrays.equals(testVector.matrix, testArray))
-					System.out.println("Same array");
-				else
-					System.out.println("Different array");
+				//if(Arrays.equals(testVector.matrix, testArray))
+				//	System.out.println("Same array");
+				//else
+				//	System.out.println("Different array");
 			}
 			outputVectors[index] = testVector;
 			index++;
+			}
 		}
 		return outputVectors;
 	}
@@ -242,6 +229,10 @@ public class HopfieldNet {
 			if(input.matrix[i] != output.matrix[i])
 				return false;
 		}
+		
+		// check if the vector arrays are the same
+		if(!(Arrays.equals(input.matrix, output.matrix)))
+			return true;
 
 		return true;
 	}
@@ -269,16 +260,16 @@ public class HopfieldNet {
 
 
 	// writeResultsFile saves the result to a file - training --> test vectors --> output vectors	
-	public static void writeResultsFile(String testFile, Vector[] outputVectors, String resultsFile){
-		System.out.println("Got into results file with results file name: " + resultsFile);
+	public static void writeResultsFile(String testFile, Vector[] outputVectors){
 		BufferedWriter output = null;
 		int mRows = outputVectors[0].mRows;
 		int nCols = outputVectors[0].nCols;
 		int length = outputVectors[0].length;	
 		int numVectors = outputVectors.length;
 		Vector[] testVectors = BipolarFileReader.vectorReader(testFile, mRows, nCols, numVectors);
-		System.out.println("returned from test file");
-		System.out.println("about to enter try catch and write to file ");
+		Scanner kb = new Scanner(System.in);
+		System.out.println("Enter a filename to save the results to (just for you, Dr. Jiang: mapping from test vectors to output vectors): ");
+		String resultsFile = kb.next();
 
 		try{
 			output = new BufferedWriter(new FileWriter(resultsFile));
@@ -286,11 +277,13 @@ public class HopfieldNet {
 			output.write(length + " \t (dimension of the image vectors)\n");
 			output.write(numVectors + "\t (number of the image vectors)\n");
 			output.write("\n");
-
+			output.write("Test Vector Patterns \t --> \t Output Vector Patterns\n");
+			output.write("---------------------\t     \t -----------------------\n");
 			// Write Test Vectors and Output Vectors
 			for(int k = 0; k < numVectors; k++) {
 				int index1 = 0, index2 = 0;
 				for (int i = 0; i < mRows; i++) {
+					output.write("\t");
 					// write a row from testVector matrix
 					for (int j = 0; j < nCols; j++) {
 						try {
@@ -307,11 +300,17 @@ public class HopfieldNet {
 							System.exit(1);
 						}
 					}
+					
+					// put space in between two vector patterns
+					if(i == (mRows/2))
+						output.write("\t --> \t");
+					else
+						output.write("\t     \t");
+					
 					// write a row from the outputVector matrix adjacent to testVector
 					for (int j = 0; j < nCols; j++) {
 						try {
 							int value = outputVectors[k].matrix[index2];
-							System.out.println("k is " + k + " index is " + index2);
 							index2++;
 							if(value == -1)
 								output.write(' ');
@@ -347,74 +346,8 @@ public class HopfieldNet {
 				System.out.println("Error closing file");
 			}
 		}catch(IOException e){
-			System.out.println("File not found");
+			System.out.println("File not found -- Results");
 		}
 	}
 }
 
-
-
-
-/*
-   public static void main(String [] args) {
-   System.out.println("Welcome to a Discrete Neural Network System");
-//TODO: implement UI and call higher level function
-Scanner kb = new Scanner(System.in);
-
-System.out.println("Enter training file name: ");
-String filename = kb.next();
-
-//TODO: may have to read mRows and nCols from input vectors, not user input, although I am not sure if that is important
-System.out.println("Enter mRows: ");
-int mRows = kb.nextInt();
-System.out.println("Enter nCols: ");
-int nCols = kb.nextInt();
-System.out.println("Enter number of input vectors: ");
-int numInputVectors = kb.nextInt();
-
-Vector [] vectors = BipolarFileReader.vectorReader(filename, mRows, nCols, numInputVectors);
-BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/outputFile1.txt", vectors);
-Vector [] newVectors = BipolarFileReader.vectorReader("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/outputFile1.txt",mRows,nCols,numInputVectors);
-Weights [] weights = new Weights[numInputVectors];
-for(int i = 0; i < numInputVectors; i++) {
-weights[i] = new Weights(vectors[i]);
-System.out.println("Initialized weights for #" + i);
-//weights[i].printWeights();
-weights[i].zeroDiagonal();
-System.out.println("Zeroed diagonal for #" + i);
-// weights[i].printWeights();
-}
-Weights W = Weights.addWeights(weights);
-BipolarFileWriter.weightsWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/weightsFile1.txt",W);
-for(Vector v : newVectors){
-v.printVector();
-}
-
-Weights newW = BipolarFileReader.weightReader("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/testingVectors/weightsFile1.txt");
-newW.printWeights();
-
-//TODO move to own function test
-System.out.println("Enter testing file name: ");
-String testfilename = kb.next();
-
-//TODO: may have to read mRows and nCols from input vectors, not user input, although I am not sure if that is important
-System.out.println("Enter mRows: ");
-int testmRows = kb.nextInt();
-System.out.println("Enter nCols: ");
-int testnCols = kb.nextInt();
-//TODO: check that these dimensions are the same as the training dimesions (can use mRows and nCols values in weights object)
-System.out.println("Enter number of input vectors: ");
-int testNumInputVectors = kb.nextInt();
-
-Vector [] outputVectors = testingMode(W, testfilename, testmRows, testnCols, testNumInputVectors);
-BipolarFileWriter.vectorWriter("/Users/jamespala/NeuralNetworks/DiscreteHopfieldNet/outputVectors/outputFile1.txt", outputVectors);
-
-//W.printWeights();
-//System.out.println("Num input vectors in vectors array: " + vectors.length);
-//for(int i = 0; i<numInputVectors; i++){
-//  for(int j = 0; j<vectors[0].matrix.length; j++) {
-//System.out.print(vectors[0].matrix.length);
-//     }
-//}
-}
- */

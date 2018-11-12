@@ -1,5 +1,5 @@
 100 	(dimension of the image vectors)
-5 	(number of the image vectors)
+6 	(number of the image vectors)
 
           
           

@@ -1,7 +1,7 @@
 /* Filename: HopfieldNet.java
  * Description: HopfieldNet simulates a Hopfield Auto-associative neural network to store and recall a set of bitmap images.
  * Names: James Pala and Taylor Wong
- * Date: November 9th, 2018
+ * Date: November 11th, 2018
  */
 
 import java.io.*;
@@ -270,13 +270,18 @@ public class HopfieldNet {
 
 	// writeResultsFile saves the result to a file - training --> test vectors --> output vectors	
 	public static void writeResultsFile(String trainingFile, String testFile, Vector[] outputVectors, String resultsFile){
+		System.out.println("Got into results file with results file name: " + resultsFile);
 		BufferedWriter output = null;
 		int mRows = outputVectors[0].mRows;
 		int nCols = outputVectors[0].nCols;
 		int length = outputVectors[0].length;	
 		int numVectors = outputVectors.length;
+		System.out.println("training File: " + trainingFile);
 		Vector[] trainingVectors = BipolarFileReader.vectorReader(trainingFile, mRows, nCols, numVectors);
+		System.out.println("returned from training, test File: " + testFile);
 		Vector[] testVectors = BipolarFileReader.vectorReader(testFile, mRows, nCols, numVectors);
+		System.out.println("returned from test file");
+		System.out.println("about to enter try catch and write to file ");
 
 		try{
 			output = new BufferedWriter(new FileWriter(resultsFile));
@@ -373,9 +378,13 @@ public class HopfieldNet {
 			// TODO: call numCorrect function
 			int correctVectors = numCorrect(testVectors, outputVectors);
 			System.out.println("Number of vectors correctly identified: " + correctVectors);
-
+			try{
+				output.close();
+			}catch(IOException e){
+				System.out.println("Error closing file");
+			}
 		}catch(IOException e){
-
+			System.out.println("File not found");
 		}
 	}
 }

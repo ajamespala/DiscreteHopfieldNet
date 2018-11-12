@@ -42,6 +42,8 @@ public class BipolarFileReader {
 							index++;
 						}
 						else if (c == 'O') {
+//							if (i ==  mRows-1)
+//								System.out.println("Index is " + index);
 							array[index] = 1;
 							index++;
 						}
@@ -96,12 +98,6 @@ public class BipolarFileReader {
 			length = in.nextInt();
 			mRows = in.nextInt();
 			nCols = in.nextInt();
-			/*  length = input.read();
-				input.read();
-				mRows = input.read();
-				input.read();
-				nCols = input.read();
-				input.read(); */
 		} catch (IOException e) {
 			System.out.println("Error reading from file, first read");
 			System.exit(1);
@@ -109,7 +105,6 @@ public class BipolarFileReader {
 		int [][] array = new int[length][length];
 		for (int i = 0; i < length; i++) {
 			//try {
-
 			// String line = input.readLine();
 			//   String [] token = line.split(" ");
 			//for(String str : token){
@@ -118,12 +113,9 @@ public class BipolarFileReader {
 			// if(token.length != length)
 			// System.out.print("Length of the read line does not match entered length");
 			for(int j = 0; j < length; j++){
-				//token[j].replace("\n","");
-				//while(in.hasNextInt()) {
 				int tmp = in.nextInt();
-				System.out.print(tmp);
+			//	System.out.print(tmp);
 				array[i][j] = tmp;
-				//  }
 			}
 			//  }catch (IOException e) {
 			//      System.out.println("Error reading from file");

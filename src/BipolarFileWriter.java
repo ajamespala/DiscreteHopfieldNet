@@ -1,7 +1,7 @@
 /* Filename: BipolarFileWriter.java
  * Description: BipolarFileWriter writes the vectors to a file
  * Names: James Pala and Taylor Wong
- * Date: November 9th, 2018
+ * Date: November 12th, 2018
  */
 
 import java.io.BufferedReader;
@@ -9,39 +9,33 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
-
+import java.io.*;
 
 public class BipolarFileWriter {
 
-	//TODO: save output patterns to file
-	// vectorWriter writes the vectors to a specified file
+	// vectorWriter writes the vectors to a specified file 
 	public static void vectorWriter(String filename, Vector [] vectors) {
 
 		BufferedWriter output = null;
 		int numInputVectors = vectors.length;
-
+		int mRows, nCols, length, index;
 		try {
-			// System.out.print(filename);
-			int mRows = vectors[0].mRows;
-			int nCols = vectors[0].nCols;
-			int length = mRows * nCols;
+			mRows = vectors[0].mRows;
+			nCols = vectors[0].nCols;
+			length = mRows * nCols;
 			output = new BufferedWriter(new FileWriter(filename));
 			output.write(length + " \t (dimension of the image vectors)\n");
 			output.write(numInputVectors + " \t (number of the image vectors)\n");
 			output.write('\n');
-		}catch(IOException e){
-			System.out.println("File not found");
-		}
 
-		for(int k = 0; k < numInputVectors; k++) {
-			int index = 0;
-			int mRows = vectors[k].mRows;
-			int nCols = vectors[k].nCols;
-			int length = mRows * nCols;
+			for(int k = 0; k < numInputVectors; k++) {
+				index = 0;
+				mRows = vectors[k].mRows;
+				nCols = vectors[k].nCols;
+				length = mRows * nCols;
 
-			for (int i = 0; i < mRows; i++) {
-				for (int j = 0; j < nCols; j++) {
-					try {
+				for (int i = 0; i < mRows; i++) {
+					for (int j = 0; j < nCols; j++) {
 						int value = vectors[k].matrix[index];
 						index++;
 						if(value == -1){
@@ -53,29 +47,27 @@ public class BipolarFileWriter {
 						else {
 							output.write('#');
 						}
-
-					}catch (IOException e) {
-						System.out.println("Error writing to file");
-						System.exit(1);
 					}
-				}
-				try {
 					output.write('\n');
-				}catch (IOException e) {
-					System.out.println("Error printing new line char");
 				}
-			}
-			try {
 				if(k != numInputVectors - 1)
 					output.write('\n');
-			}catch (IOException e) {
-				System.out.println("Error printing new line char");
 			}
-		}
-		try {
-			output.close();
-		} catch (IOException e) {
-			System.out.println("Error closing file");
+		} catch(EOFException e){
+			System.out.println("End of File");
+		} catch(FileNotFoundException e){
+			System.out.println("File Not Found");
+		} catch(IOException e) {
+			System.out.println("Error reading/writing file");
+		} finally{
+			if(output != null){
+				try{
+					output.close();
+				} catch(IOException e){
+					System.out.println("Error Closing");
+					System.exit(1);
+				}
+			}
 		}
 	}
 
@@ -91,11 +83,6 @@ public class BipolarFileWriter {
 			output.write(mRows + " ");
 			output.write(nCols + " ");
 			output.write('\n');
-		}catch(IOException e){
-			System.out.println("File not found");
-			System.exit(1);
-		}
-		try {
 			for (int i = 0; i < length; i++) {
 				for (int j = 0; j < length; j++) {
 					int value = weights.matrix[i][j];
@@ -103,14 +90,22 @@ public class BipolarFileWriter {
 				}
 				output.write("\n");
 			}
-		}catch(IOException e){
-			System.out.println("Error writing to file");
-			System.exit(1);
-		}
-		try {
 			output.close();
-		}catch (IOException e){
-			System.out.println("Error closing file");
+		} catch(EOFException e){
+			System.out.println("End of File");
+		} catch(FileNotFoundException e){
+			System.out.println("File Not Found");
+		} catch(IOException e) {
+			System.out.println("Error reading/writing file");
+		} finally{
+			if(output != null){
+				try{
+					output.close();
+				} catch(IOException e){
+					System.out.println("Error Closing");
+					System.exit(1);
+				}
+			}
 		}
 	}
 }

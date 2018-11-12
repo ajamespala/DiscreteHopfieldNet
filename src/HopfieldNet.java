@@ -10,16 +10,10 @@ import java.util.stream.IntStream;
 import java.lang.*;
 import java.util.Arrays;
 
-//import java.io.BufferedReader;
-//import java.io.FileNotFoundException;
-//import java.io.FileWriter;
-//import java.io.BufferedWriter;
-//import java.io.IOException;
-
 public class HopfieldNet {
 	public static void main(String[]args){
 		Scanner kb = new Scanner(System.in);
-		System.out.println("\n Welcome to the Hopfield Neural Network");
+		System.out.println("\nWelcome to the Hopfield Neural Network");
 		Weights W = null;
 		String trainingFile, testFile, weightFile, resultsFile;
 		trainingFile = testFile = weightFile = resultsFile = "";
@@ -37,8 +31,6 @@ public class HopfieldNet {
 				System.out.println("Enter the weight file name you wish to use: ");
 				weightFile = kb.next();
 				outputVectors = testingMode(weightFile, testFile);
-				// save results to a file - vectors, num correct, etc.s	
-				writeResultsFile(testFile, outputVectors);			
 			}
 
 			// ask user if they want to go directly into testing mode 
@@ -48,8 +40,6 @@ public class HopfieldNet {
 				System.out.println("Enter testing file name: ");
 				testFile = kb.next();
 				outputVectors = testingMode(weightFile, testFile);
-				// save results to a file - vectors, num correct, etc.s	
-				writeResultsFile(testFile, outputVectors);			
 			}
 			String again = " "; 
 			if(test != 2){
@@ -112,11 +102,11 @@ public class HopfieldNet {
 		int mRows = W.mRows;
 		int nCols = W.nCols;
 
-		System.out.println("Enter output file name (just saves output vectors, see next prompt for more): ");
+		System.out.println("Enter output filename to save output vectors (see later prompt for more): ");
 		String outputFile = kb.next();
 		System.out.println("Enter number of input vectors: ");
 		int numInputVectors = kb.nextInt();
-		System.out.println("Enter a value for the threshold theta: ");
+		System.out.println("Enter a value for the threshold theta (usually 0): ");
 		double theta = kb.nextDouble();
 
 		Vector [] outputVectors = test(W, testFile, mRows, nCols, numInputVectors, theta);
@@ -129,7 +119,8 @@ public class HopfieldNet {
 		}
 
 		BipolarFileWriter.vectorWriter(outputFile, outputVectors);
-
+		// save results to a file - vectors, num correct, etc.	
+		writeResultsFile(testFile, outputVectors);			
 		return outputVectors;
 	}
 
@@ -139,6 +130,7 @@ public class HopfieldNet {
 		int length = testmRows * testmRows;
 		Vector [] testVectors = BipolarFileReader.vectorReader(filename,testmRows,testnCols,testNumInputVectors);
 		boolean continueCondition = true;
+		
 		while(continueCondition) {
 			int index = 0;
 
@@ -155,7 +147,6 @@ public class HopfieldNet {
 					testArray[j] = testVector.matrix[j];
 				}
 
-				// TODO: could put in another function that computes y_in for i to n, applies activiation function and broadcasts y
 				// randomly choose x_i from the testVector to calculate y_in
 				for (int i = 0; i < length; i++) {
 					double rand = Math.random() * 100;
@@ -180,15 +171,10 @@ public class HopfieldNet {
 						testVector.matrix[random] = y;
 					if(y != beginInt)
 						updated = true;
-
 					if(updated)
 						continueCondition = true;
 					else
 						continueCondition = false;
-					//if(epochCount > 100)
-					//     continueCondition = false;
-					//TODO: check for flipflop, ie has it seen this output vector before?
-					//System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
 					epochCount++;
 				}
 				outputVectors[index] = testVector;
@@ -201,7 +187,6 @@ public class HopfieldNet {
 	// activationFunc calculates the value of y as a result of the activiation function with input y_in
 	public static int activationFunc(int y_in, double theta){  
 		int y = 0;
-
 		if(y_in > theta)
 			y = 1;
 		else if(y_in < theta)
@@ -230,11 +215,11 @@ public class HopfieldNet {
 		return true;
 	}
 
-	//TODO: need to verify testing vectors are same dimensions as training vectors
+	//checkDimensions verifies testing vectors are same dimensions as training vectors
 	public static boolean checkDimensions(Vector input, Vector output){
 		if((input.mRows != output.mRows) || (input.nCols != input.nCols))
 			return false;
-		if(input.length != output.length)  // TODO: James check - may be unnecessary
+		if(input.length != output.length)  
 			return false;
 		return true;
 	}

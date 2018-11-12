@@ -1,0 +1,174 @@
+Script started on Mon Nov 12 10:25:21 2018
+bash: scl_source: No such file or directory
+[?1034hbash-3.2$ exit[Kjava HopfieldNet.[K
+
+Welcome to the Hopfield Neural Network
+Enter 1 to enter the training mode, enter 2 to enter the testing mode.
+1
+Enter a filename to save the weight matrix: 
+w5 eights5       t eights5
+Enter training file name: 
+trainingFile5V.txt
+Enter mRows: 
+10
+Enter nCols: 
+10
+Enter number of input vectors: 
+5
+Enter a 1 to enter testing mode.  Enter 2 to quit.
+1
+Enter testing file name: 
+testingFile5VI.txt
+Enter output filename to save output vectors (see later prompt for more): 
+output5VI-2
+Enter number of input vectors: 
+5
+Enter a value for the threshold theta (usually 0): 
+0
+Enter a filename to save the results to (just for you, Dr. Jiang: mapping from test vectors to output vectors): 
+results5VI-2
+Would you like to run again? Y/N
+n
+bash-3.2$ cat results5Vi[KI-2
+100 	 (dimension of the image vectors)
+5	 (number of the image vectors)
+
+Test Vector Patterns 	 --> 	 Output Vector Patterns
+---------------------	     	 -----------------------
+	O O O # # 	     	O O O O O 
+	 O O O # O	     	 O O O O O
+	O O O O O 	     	O O O O O 
+	 # # # # #	     	 O O O O O
+	O # # # # 	     	O O O O O 
+	 O # # O O	 --> 	 O O O O O
+	O O O O O 	     	O O O O O 
+	 O # O O O	     	 O O O O O
+	O O # O O 	     	O O O O O 
+	 O########	     	 O O O O O
+
+	O#  OO  OO	     	OO  OO  OO
+	OO  OO  OO	     	OO  OO  OO
+	  OO  ##  	     	  OO  OO  
+	  OO  O###	     	  OO  OO  
+	##  OO  OO	     	OO  OO  OO
+	OO  OO  OO	 --> 	OO  OO  OO
+	  OO  ####	     	  OO  OO  
+	  OO  #O  	     	  OO  OO  
+	##  OO  OO	     	OO  OO  OO
+	##########	     	OO  OO  OO
+
+	OO###     	     	OOOOO     
+	OOO#O     	     	OOOOO     
+	O#OO#     	     	OOOOO     
+	##OOO  #  	     	OOOOO     
+	OOO#O     	     	OOOOO     
+	     O#OOO	 --> 	     OOOOO
+	     #####	     	     OOOOO
+	 #   OOO##	     	     OOOOO
+	     OOOO#	     	     OOOOO
+	##########	     	     OOOOO
+
+	# ##  O  O	     	O  O  O  O
+	 O  O##O #	     	 O  O  O  
+	 #O  O  O#	     	  O  O  O 
+	O  O ##  O	     	O  O  O  O
+	 O  O  O  	     	 O  O  O  
+	  ## O  O 	 --> 	  O  O  O 
+	#  O  O  #	     	O  O  O  O
+	 O  O ####	     	 O  O  O  
+	##O #O  O 	     	  O  O  O 
+	##########	     	O  O  O  O
+
+	OO###OOO#O	     	OOOOOOOOOO
+	O        #	     	O        O
+	O OOOOOO #	     	O OOOOOO O
+	##O    O O	     	O O    O O
+	O # OO O O	     	O O OO O O
+	O O ## O O	 --> 	O O OO O O
+	##O    # O	     	O O    O O
+	O ###OOO O	     	O OOOOOO O
+	O       #O	     	O        O
+	##########	     	OOOOOOOOOO
+bash-3.2$ java HopfieldNet.[K
+
+Welcome to the Hopfield Neural Network
+Enter 1 to enter the training mode, enter 2 to enter the testing mode.
+2
+Enter testing file name: 
+testingFile5VC.txt
+Enter the weight file name you wish to use: 
+weights5
+Enter output filename to save output vectors (see later prompt for more): 
+output5VC-2
+Enter number of input vectors: 
+5
+Enter a value for the threshold theta (usually 0): 
+0
+Enter a filename to save the results to (just for you, Dr. Jiang: mapping from test vectors to output vectors): 
+results5VC-2
+Enter a 1 to enter testing mode.  Enter 2 to quit.
+2
+bash-3.2$ cat results%[K5VC-2
+100 	 (dimension of the image vectors)
+5	 (number of the image vectors)
+
+Test Vector Patterns 	 --> 	 Output Vector Patterns
+---------------------	     	 -----------------------
+	          	     	O O O O O 
+	          	     	 O O O O O
+	          	     	O O O O O 
+	          	     	 O O O O O
+	          	     	O O O O O 
+	 O O O O O	 --> 	 O O O O O
+	O O O O O 	     	O O O O O 
+	 O O O O O	     	 O O O O O
+	O O O O O 	     	O O O O O 
+	 O O O O O	     	 O O O O O
+
+	OOO O    O	     	OO  OO  OO
+	 O  OOO OO	     	OO  OO  OO
+	  O O OO O	     	  OO  OO  
+	 OOO   O  	     	  OO  OO  
+	OO  O  OOO	     	OO  OO  OO
+	 O OOO   O	 --> 	OO  OO  OO
+	O OO  O  O	     	  OO  OO  
+	   O OOO  	     	  OO  OO  
+	OO OOO  O 	     	OO  OO  OO
+	 O  O  OOO	     	OO  OO  OO
+
+	OOOOO     	     	OOOOO     
+	O   O OOO 	     	OOOOO     
+	O   O OOO 	     	OOOOO     
+	O   O OOO 	     	OOOOO     
+	OOOOO     	     	OOOOO     
+	     OOOOO	 --> 	     OOOOO
+	 OOO O   O	     	     OOOOO
+	 OOO O   O	     	     OOOOO
+	 OOO O   O	     	     OOOOO
+	     OOOOO	     	     OOOOO
+
+	O  OOOO  O	     	O  O  O  O
+	OO  OOOO  	     	 O  O  O  
+	OOO  OOOO 	     	  O  O  O 
+	OOOO  OOOO	     	O  O  O  O
+	 OOOO  OOO	     	 O  O  O  
+	  OOOO  OO	 --> 	  O  O  O 
+	O  OOOO  O	     	O  O  O  O
+	OO  OOOO  	     	 O  O  O  
+	OOO  OOOO 	     	  O  O  O 
+	OOOO  OOOO	     	O  O  O  O
+
+	OOOOOOOOOO	     	OOOOOOOOOO
+	O        O	     	O        O
+	O        O	     	O OOOOOO O
+	O        O	     	O O    O O
+	O   OO   O	     	O O OO O O
+	O   OO   O	 --> 	O O OO O O
+	O        O	     	O O    O O
+	O        O	     	O OOOOOO O
+	O        O	     	O        O
+	OOOOOOOOOO	     	OOOOOOOOOO
+bash-3.2$ exit
+exit
+
+Script done on Mon Nov 12 10:27:46 2018

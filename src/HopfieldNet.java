@@ -10,6 +10,12 @@ import java.util.stream.IntStream;
 import java.lang.*;
 import java.util.Arrays;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class HopfieldNet {
 	public static void main(String[]args){
 		Scanner kb = new Scanner(System.in);
@@ -314,14 +320,14 @@ public class HopfieldNet {
 
 			// Write Test Vectors and Output Vectors
 			for(int k = 0; k < numVectors; k++) {
-				int index = 0;
+				int index1 = 0, index2 = 0;
 				for (int i = 0; i < mRows; i++) {
 					// write a row from testVector matrix
 					for (int j = 0; j < nCols; j++) {
 						try {
-							int value = testVectors[k].matrix[index];
-							System.out.println("k is " + k + " index is " + index);
-							index++;
+							int value = testVectors[k].matrix[index1];
+							System.out.println("k is " + k + " index is " + index1);
+							index1++;
 							if(value == -1)
 								output.write(' ');
 							else if(value == 1) 
@@ -336,8 +342,9 @@ public class HopfieldNet {
 					// write a row from the outputVector matrix adjacent to testVector
 					for (int j = 0; j < nCols; j++) {
 						try {
-							int value = outputVectors[k].matrix[index];
-							index++;
+							int value = outputVectors[k].matrix[index2];
+							System.out.println("k is " + k + " index is " + index2);
+							index2++;
 							if(value == -1)
 								output.write(' ');
 							else if(value == 1) 

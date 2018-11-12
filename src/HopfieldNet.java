@@ -40,7 +40,7 @@ public class HopfieldNet {
 				// save results to a file - vectors, num correct, etc.s	
 				System.out.println("Enter a filename to save the results to: ");
 				resultsFile = kb.next();
-				writeResultsFile(trainingFile, testFile, outputVectors, resultsFile);			
+				writeResultsFile(testFile, outputVectors, resultsFile);			
 			}
 
 
@@ -56,7 +56,7 @@ public class HopfieldNet {
 				// save results to a file - vectors, num correct, etc.s	
 				System.out.println("Enter a filename to save the results to: ");
 				resultsFile = kb.next();
-				writeResultsFile(trainingFile, testFile, outputVectors, resultsFile);			
+				writeResultsFile(testFile, outputVectors, resultsFile);			
 			}
 
 			System.out.println("Would you like to run again? Y/N");
@@ -269,16 +269,13 @@ public class HopfieldNet {
 
 
 	// writeResultsFile saves the result to a file - training --> test vectors --> output vectors	
-	public static void writeResultsFile(String trainingFile, String testFile, Vector[] outputVectors, String resultsFile){
+	public static void writeResultsFile(String testFile, Vector[] outputVectors, String resultsFile){
 		System.out.println("Got into results file with results file name: " + resultsFile);
 		BufferedWriter output = null;
 		int mRows = outputVectors[0].mRows;
 		int nCols = outputVectors[0].nCols;
 		int length = outputVectors[0].length;	
 		int numVectors = outputVectors.length;
-		System.out.println("training File: " + trainingFile);
-		Vector[] trainingVectors = BipolarFileReader.vectorReader(trainingFile, mRows, nCols, numVectors);
-		System.out.println("returned from training, test File: " + testFile);
 		Vector[] testVectors = BipolarFileReader.vectorReader(testFile, mRows, nCols, numVectors);
 		System.out.println("returned from test file");
 		System.out.println("about to enter try catch and write to file ");
@@ -290,39 +287,6 @@ public class HopfieldNet {
 			output.write(numVectors + "\t (number of the image vectors)\n");
 			output.write("\n");
 
-			// Write Training Vectors
-			for(int k = 0; k < numVectors; k++) {
-				int index = 0;
-				for (int i = 0; i < mRows; i++) {
-					for (int j = 0; j < nCols; j++) {
-						try {
-							int value = trainingVectors[k].matrix[index];
-							index++;
-							if(value == -1)
-								output.write(' ');
-							else if(value == 1) 
-								output.write('O');
-							else
-								output.write('#');
-						}catch (IOException e) {
-							System.out.println("Error writing to file");
-							System.exit(1);
-						}
-					}
-					try {
-						output.write('\n');
-					}catch (IOException e) {
-						System.out.println("Error printing new line char");
-					}
-				}
-				try {
-					if(k != numVectors - 1)
-						output.write('\n');
-				}catch (IOException e) {
-					System.out.println("Error printing new line char");
-				}
-			}
-
 			// Write Test Vectors and Output Vectors
 			for(int k = 0; k < numVectors; k++) {
 				int index1 = 0, index2 = 0;
@@ -331,7 +295,6 @@ public class HopfieldNet {
 					for (int j = 0; j < nCols; j++) {
 						try {
 							int value = testVectors[k].matrix[index1];
-							System.out.println("k is " + k + " index is " + index1);
 							index1++;
 							if(value == -1)
 								output.write(' ');

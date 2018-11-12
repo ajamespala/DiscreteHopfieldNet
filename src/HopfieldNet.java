@@ -1,7 +1,7 @@
 /* Filename: HopfieldNet.java
  * Description: HopfieldNet simulates a Hopfield Auto-associative neural network to store and recall a set of bitmap images.
  * Names: James Pala and Taylor Wong
- * Date: November 11th, 2018
+ * Date: November 12th, 2018
  */
 
 import java.io.*;
@@ -10,11 +10,11 @@ import java.util.stream.IntStream;
 import java.lang.*;
 import java.util.Arrays;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.IOException;
+//import java.io.BufferedReader;
+//import java.io.FileNotFoundException;
+//import java.io.FileWriter;
+//import java.io.BufferedWriter;
+//import java.io.IOException;
 
 public class HopfieldNet {
 	public static void main(String[]args){
@@ -111,6 +111,7 @@ public class HopfieldNet {
 		Weights W = BipolarFileReader.weightReader(weightFile);
 		int mRows = W.mRows;
 		int nCols = W.nCols;
+
 		System.out.println("Enter output file name (just saves output vectors, see next prompt for more): ");
 		String outputFile = kb.next();
 		System.out.println("Enter number of input vectors: ");
@@ -121,10 +122,12 @@ public class HopfieldNet {
 		Vector [] outputVectors = test(W, testFile, mRows, nCols, numInputVectors, theta);
 		Vector [] testVectors = BipolarFileReader.vectorReader(testFile, W.mRows, W.nCols, numInputVectors);
 		boolean sameDim = checkDimensions(testVectors[0], outputVectors[0]);
+
 		if(!sameDim){
 			System.out.println("Dimensions do not match. Try Again.");
 			outputVectors = testingMode(weightFile, testFile);
 		}
+
 		BipolarFileWriter.vectorWriter(outputFile, outputVectors);
 
 		return outputVectors;
@@ -137,23 +140,22 @@ public class HopfieldNet {
 		Vector [] testVectors = BipolarFileReader.vectorReader(filename,testmRows,testnCols,testNumInputVectors);
 		boolean continueCondition = true;
 		while(continueCondition) {
-		int index = 0;
+			int index = 0;
 
-		// go through each test vector and adjust weights as needed
-		for(Vector v : testVectors) {
-			Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);  // y vector 
-			int [] indexSeen = new int [length];
-			int epochCount = 0;
-			int [] testArray = new int[length];
+			// go through each test vector and adjust weights as needed
+			for(Vector v : testVectors) {
+				Vector testVector = new Vector(v.mRows,v.nCols,v.matrix);  // y vector 
+				int [] indexSeen = new int [length];
+				int epochCount = 0;
+				int [] testArray = new int[length];
 
-			// simulates the Hopfield Neural Net implementing the Hebbian Learning Rule
+				// simulates the Hopfield Neural Net implementing the Hebbian Learning Rule
 				boolean updated = false;
 				for(int j = 0; j < length; j++){
 					testArray[j] = testVector.matrix[j];
 				}
 
 				// TODO: could put in another function that computes y_in for i to n, applies activiation function and broadcasts y
-				// -----------------------------------------------------------------------------------------------------------------
 				// randomly choose x_i from the testVector to calculate y_in
 				for (int i = 0; i < length; i++) {
 					double rand = Math.random() * 100;
@@ -178,26 +180,19 @@ public class HopfieldNet {
 						testVector.matrix[random] = y;
 					if(y != beginInt)
 						updated = true;
-				// -----------------------------------------------------------------------------------------------------------------
 
-				if(updated)
-					continueCondition = true;
-				else
-					continueCondition = false;
-				//if(epochCount > 100)
-				//     continueCondition = false;
-				//TODO: check for flipflop, ie has it seen this output vector before?
-				//System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
-				epochCount++;
-
-				//TODO: question - this verifies the vectors? Can put in verify vector function here if you want
-				//if(Arrays.equals(testVector.matrix, testArray))
-				//	System.out.println("Same array");
-				//else
-				//	System.out.println("Different array");
-			}
-			outputVectors[index] = testVector;
-			index++;
+					if(updated)
+						continueCondition = true;
+					else
+						continueCondition = false;
+					//if(epochCount > 100)
+					//     continueCondition = false;
+					//TODO: check for flipflop, ie has it seen this output vector before?
+					//System.out.println("<-Epoch " + epochCount + " for test vector #" + index);
+					epochCount++;
+				}
+				outputVectors[index] = testVector;
+				index++;
 			}
 		}
 		return outputVectors;
@@ -216,8 +211,6 @@ public class HopfieldNet {
 		return y;
 	}
 
-	//ie weights file will match testing vectors (which also matches training
-
 	// verifyVectors checks if the input and output vectors are the same, else return false
 	public static boolean verifyVectors(Vector input, Vector output){
 		// check for equal dimensions
@@ -229,7 +222,7 @@ public class HopfieldNet {
 			if(input.matrix[i] != output.matrix[i])
 				return false;
 		}
-		
+
 		// check if the vector arrays are the same
 		if(!(Arrays.equals(input.matrix, output.matrix)))
 			return true;
@@ -273,12 +266,14 @@ public class HopfieldNet {
 
 		try{
 			output = new BufferedWriter(new FileWriter(resultsFile));
+	
 			// Write Header
 			output.write(length + " \t (dimension of the image vectors)\n");
 			output.write(numVectors + "\t (number of the image vectors)\n");
 			output.write("\n");
 			output.write("Test Vector Patterns \t --> \t Output Vector Patterns\n");
 			output.write("---------------------\t     \t -----------------------\n");
+	
 			// Write Test Vectors and Output Vectors
 			for(int k = 0; k < numVectors; k++) {
 				int index1 = 0, index2 = 0;
@@ -300,13 +295,13 @@ public class HopfieldNet {
 							System.exit(1);
 						}
 					}
-					
+
 					// put space in between two vector patterns
 					if(i == (mRows/2))
 						output.write("\t --> \t");
 					else
 						output.write("\t     \t");
-					
+
 					// write a row from the outputVector matrix adjacent to testVector
 					for (int j = 0; j < nCols; j++) {
 						try {
@@ -337,16 +332,13 @@ public class HopfieldNet {
 					System.out.println("Error printing new line char");
 				}
 			}
-			// TODO: call numCorrect function
-			int correctVectors = numCorrect(testVectors, outputVectors);
-			System.out.println("Number of vectors correctly identified: " + correctVectors);
 			try{
 				output.close();
 			}catch(IOException e){
 				System.out.println("Error closing file");
 			}
 		}catch(IOException e){
-			System.out.println("File not found -- Results");
+			System.out.println("File not found");
 		}
 	}
 }

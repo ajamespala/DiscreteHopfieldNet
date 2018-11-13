@@ -111,12 +111,6 @@ public class HopfieldNet {
 
 		Vector [] outputVectors = test(W, testFile, mRows, nCols, numInputVectors, theta);
 		Vector [] testVectors = BipolarFileReader.vectorReader(testFile, W.mRows, W.nCols, numInputVectors);
-		boolean sameDim = checkDimensions(testVectors[0], outputVectors[0]);
-
-		if(!sameDim){
-			System.out.println("Dimensions do not match. Try Again.");
-			outputVectors = testingMode(weightFile, testFile);
-		}
 
 		BipolarFileWriter.vectorWriter(outputFile, outputVectors);
 		// save results to a file - vectors, num correct, etc.	
@@ -195,47 +189,6 @@ public class HopfieldNet {
 			y = 0;
 		return y;
 	}
-
-	// verifyVectors checks if the input and output vectors are the same, else return false
-	public static boolean verifyVectors(Vector input, Vector output){
-		// check for equal dimensions
-		if(!checkDimensions(input, output))
-			return false;
-
-		// check vector matrix 
-		for(int i = 0; i < input.length; i++){
-			if(input.matrix[i] != output.matrix[i])
-				return false;
-		}
-
-		// check if the vector arrays are the same
-		if(!(Arrays.equals(input.matrix, output.matrix)))
-			return true;
-
-		return true;
-	}
-
-	//checkDimensions verifies testing vectors are same dimensions as training vectors
-	public static boolean checkDimensions(Vector input, Vector output){
-		if((input.mRows != output.mRows) || (input.nCols != input.nCols))
-			return false;
-		if(input.length != output.length)  
-			return false;
-		return true;
-	}
-
-	// numCorrect counts the number of correct vectors after training and testing
-	public static int numCorrect(Vector[] inputVectors, Vector[] outputVectors){
-		int count = 0;
-		for(int i = 0; i < inputVectors.length; i++){
-			if(!checkDimensions(inputVectors[i], outputVectors[i])){
-				if(verifyVectors(inputVectors[i], outputVectors[i]))
-					count++;
-			}
-		}
-		return count;
-	}
-
 
 	// writeResultsFile saves the result to a file - training --> test vectors --> output vectors	
 	public static void writeResultsFile(String testFile, Vector[] outputVectors){
